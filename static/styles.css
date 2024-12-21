@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Noto+Emoji:wght@300..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Bellota+Text:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&family=Noto+Emoji:wght@300..700&display=swap');
+
+body {
+    font-family: "Bellota Text", serif;
+    font-weight: 600;
+    font-style: normal;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #efe7dd, #d8a790, #ab6940);
+    color: #764b36;
+}
+.navbar {
+    width: 100%;
+    position: fixed;
+    background-color: #ab6940cc;
+    z-index: 1000;
+    height: 5%;
+    padding: 0 20px; /* Adds space to the left and right */
+    display: flex;
+    align-items: flex-end; /* Aligns items towards the bottom of the navbar */
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-evenly; /* Spreads links evenly with equal space */
+    width: 100%; /* Ensures the spacing covers the entire width */
+}
+
+.navbar li {
+    margin: 0 10px; /* Adds spacing between list items */
+}
+
+.navbar a {
+    color: #efe7dd;
+    text-decoration: none;
+    padding: 10px 15px; /* Adds padding inside links */
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.navbar a:hover {
+    color: #fafafa;
+    transform: scale(1.1); 
+    transition: transform 0.3s;
+}
+
+/* Mobile Styles */
+@media (max-width: 580px) {
+
+    .navbar {
+        height: auto; /* Adjust height for the column layout */
+        flex-direction: column; /* Stack items vertically */
+        align-items: flex-start; /* Align items to the left */
+        padding: 10px 20px 0 20px; /* Add padding for better spacing */
+        width: 18%;
+        border-radius: 5px;
+        top: 80%;
+        background-color: #ab694080;
+    }
+
+    .navbar a {
+        padding: 10px 0; /* Adjust spacing between links */
+        width: 100%; /* Make links take up full width */
+        text-align: left; /* Align text to the left */
+        font-size: 0.7rem;
+    }
+
+    body {
+        font-size: 0.9rem;
+    }
+    section h2 {
+        font-size: 10px;
+    }
+}
+.container {
+    
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+header {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+header .invite-header{
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+header h1 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #FFF;
+    font-size: 2.5rem;
+    margin: 0;
+    text-shadow: 0px 4px 8px rgba(0, 0, 0, 0.7);
+}
+
+.section {
+    background-color: #FFF;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+.section h2 {
+    font-family: "Bellota Text", serif;
+    font-weight: 900;
+    font-style: normal;
+    font-size: 1.8rem;
+    color: #ab6940;
+}
+.section button {
+    background-color: #638474;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+}
+.section button a {
+    text-decoration: none;
+    color:#efe7dd;
+    font-size: 1rem;
+    padding: 10px;
+}
+.section button:hover {
+    background-color: #5a7769;
+}
+.form input, .form textarea, .form select, .form button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #DDD;
+    font-size: 1rem;
+    color:#764b36;
+}
+.form button {
+    background-color: #638474;
+    color:#efe7dd;
+    border: none;
+    cursor: pointer;
+}
+.form ::placeholder{
+    color:#764b36;
+}
+.form button:hover {
+    background-color: #5a7769;
+}
+.radio-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.radio-group label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    gap: 5px;
+    margin: 0;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.radio-group label:hover {
+    transform: scale(1.1);
+}
+.radio-group label span {
+    font-family: 'Noto Emoji', sans-serif;
+    font-size: 1.5rem;
+    margin-left: 10px;
+}
+input[type="radio"] {
+    display: none;
+}
+input[type="radio"] + label span {
+    display: none;
+}
+input[type="radio"]:checked + label span {
+    display: inline;
+}
+#happy {
+    color: #6d8b75;
+    
+}
+#sad {
+    color: #e08ca1;
+}
+form select option {
+    color: #764b36;
+}
+ul li {
+    text-align: left;
+}
+/* Slider Container */
+.slider {
+    position: relative;
+    width: 80%; /* Adjust width as needed */
+    max-width: 800px; /* Max width for the slider */
+    margin: 0 auto;
+    overflow: hidden; /* Hide overflow for smooth scrolling effect */
+    border: 2px solid #ab6940;
+    border-radius: 8px;
+}
+
+/* Slides */
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out; /* Smooth sliding effect */
+}
+
+/* Individual Images */
+.slides img {
+    width: 100%; /* Set images to take up the full width of the slider */
+    height: auto; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensure images are visually appealing */
+}
+
+/* Navigation Buttons */
+.navigation {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+}
+
+.navigation button {
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    font-size: 2rem;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.navigation button:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+footer {
+    background-color: #FFF;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+footer p {
+    margin: 0;
+    font-size: 1rem;
+    color: #638474;
+}

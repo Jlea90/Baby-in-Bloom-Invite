@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baby in Bloom - Crystal's Baby Shower</title>
+ <link rel="stylesheet" href="static/styles.css">
+ <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+ 
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#about">Registry</a>
+        <a href="#rsvp">RSVP</a>
+        <a href="#potlock">Potluck</a>
+        <a href="#announcements">Announcements</a>
+        <a href="#gallery">Gallery</a>  
+    </nav>
+    <div class="container">
+        <header>
+            <img class="invite-header" src="static\Welcome Basil_20241221_155907_0000.png" alt="Invitation to Baby Shower for Crystal & Andy Solis.">
+        </header>
+
+        <div class="section" id="about">
+            <h2>About the Event</h2>
+            <p>Crystal and Andy Solis are thrilled to be expecting there first child—a baby girl named Basil! Let’s come together to shower them with love, joy, and support as she embarks on this beautiful journey into motherhood. We hope you’ll join us for a magical garden-themed dance party filled with good music, fun vibes, and plenty of memories.</p>
+
+                <p>What to Wear: Embrace the garden theme! Think floral, colorful, and elegant—dress as if you’re strolling through a beautiful garden and ready to dance the night away.</p>
+                
+                <p>Potluck Contribution: If you’d like to bring a dish, dessert, or drinks, we’d greatly appreciate your help! Simply scroll down to the potluck sign-up section to let us know what you’d like to contribute.</p>
+                
+                <p>Gifts & Registry:
+                Crystal has thoughtfully curated her baby registry on Target and Amazon (links below). If purchasing from the registry isn’t an option, consider gifting cash to help support Crystal and baby Basil. Please avoid buying bottles or diapers that are not listed in the registry, as Crystal has carefully selected items that align with her research and parenting preferences. Let’s ensure we’re supporting her choices as a mother.</p>
+                
+                <p>Additional Notes:</p>
+                
+                <p>If you’d like to bring a guest, please include their details in the RSVP notes section. One of Crystal’s sisters will reach out to confirm.</p>
+                <p>For any questions or concerns, feel free to contact Jana Martin at (678) 790-1076 or Kerry Kurihara at (678) 545-7501.</p>
+               <p>We can’t wait to celebrate with you and make this a memorable day for Crystal and baby Basil. Thank you for your love and support—we hope to see you there!</p>
+               <button class="registry-btn"><a href="https://www.target.com/gift-registry/gift-giver?registryId=4960ee50-5454-11ef-a3ff-2b9baf4cbf3f&type=BABY" target="_blank">Target Registry</a></button>
+               <button class="registry-btn"><a href="https://www.amazon.com/baby-reg/crystal-solis-march-2025/3VX2QYY3VKTPL" target="_blank">Amazon Registry</a></button>
+            <button><a href="https://www.google.com/maps/place/16026+Barnesville+St,+Zebulon,+GA+30295/@33.1019363,-84.3443507,16z/data=!3m1!4b1!4m6!3m5!1s0x88f4866e70133afd:0xef2415fc677eb5d7!8m2!3d33.1019363!4d-84.3417704!16s%2Fg%2F11tg372tz3?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D" class="direction-button" target="_blank">Get Directions</a></button>
+        </div>
+
+        <div class="section" id="rsvp">
+            <h2>RSVP</h2>
+            <form class="form" action="https://formspree.io/f/xrbbzydy" method="POST">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <div class="radio-group">
+                    <input type="radio" id="attend" name="attendance" value="Yes" required>
+                    <label for="attend">I will attend <span id="happy">😊</span></label>
+                    <input type="radio" id="not-attend" name="attendance" value="No" required>
+                    <label for="not-attend">I will not attend <span id="sad">😢</span></label>
+                </div>
+                <textarea name="message" placeholder="Any notes or questions?"></textarea>
+                <button type="submit">RSVP</button>
+            </form>
+        </div>
+
+        <div class="section" id="potlock">
+            <h2>Potluck Sign-Up</h2>
+            <form class="form" action="https://formspree.io/f/xrbbzydy" method="POST">
+                <input type="text" name="name" placeholder="Your Name" required>
+                <input type="email" name="email" placeholder="Your Email" required>
+                <select name="dish">
+                    <option value="Appetizers">Appetizers</option>
+                    <option value="Main Dish">Main Dish</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Drinks">Drinks</option>
+                </select>
+                <textarea name="dietary" placeholder="Any dietary restrictions or notes?"></textarea>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+
+        <div class="section" id="announcements">
+            <h2>Announcements</h2>
+            <div id="announcement-list">
+                <!-- Announcements will be dynamically loaded here -->
+                 <p>The baby shower will be held in The Upper Room, located in Zebulon, GA. The bulding is located on the corner of Griffin St and Barnsville St in downtown Zebulon. 
+                    We recommend using the Barnsville st address below for your GPS.</p>
+                <p>Please note that parking is across from the building, and the entrance can be tricky to find. Follow these steps to make your arrival smoother:</p>
+                 <ul>
+                     <li>Parking: Park in the designated lot across the street from The Upper Room.</li>
+                     <li>Finding the Entrance:
+                        After parking, walk to the building and locate the entrance at the side alleyway (or specific landmark, if known).</li>
+                     <li>GPS: 16026 Barnseville St. Zebulon, GA 30295 </li>
+                     <!-- Additional announcements will be dynamically added here -->
+                 </ul>
+            </div>
+        </div>
+
+        <div class="section" id="gallery">
+            <h2>Photo Gallery</h2>
+            <div class="slider">
+                <div class="slides">
+                    <img src="static/crystal&andy.jpg" alt="Gallery Image 1">
+                    <img src="[Photo2 URL]" alt="Gallery Image 2">
+                   
+                </div>
+                <div class="navigation">
+                    <button id="prev">&#10094;</button>
+                    <button id="next">&#10095;</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Thank you for joining us in celebrating Baby Basil!</p>
+            <p>Website made with love!</p>
+        </footer>
+    </div>
+    <script>
+       document.addEventListener('DOMContentLoaded', () => {
+    const slides = document.querySelector('.slides');
+    const images = document.querySelectorAll('.slides img');
+    const prevButton = document.getElementById('prev');
+    const nextButton = document.getElementById('next');
+    let index = 0;
+    const totalImages = images.length;
+
+    // Function to update the slide position
+    function showSlide() {
+        slides.style.transform = `translateX(${-index * 100}%)`;
+    }
+
+    // Event listeners for navigation buttons
+    nextButton.addEventListener('click', () => {
+        index = (index + 1) % totalImages;
+        showSlide();
+    });
+
+    prevButton.addEventListener('click', () => {
+        index = (index - 1 + totalImages) % totalImages;
+        showSlide();
+    });
+
+    // Initialize the slider
+    showSlide();
+});
+
+
+    </script>
+</body>
+</html>

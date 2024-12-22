@@ -58,9 +58,9 @@
             </form>
         </div>
 
-        <div class="section" id="potluck" action="https://formspree.io/f/xrbbzydy" method="POST">
+        <div class="section" id="potluck" >
             <h2>Potluck Sign-Up</h2>
-            <form class="form" id="potluck-form">
+            <form class="form" id="potluck-form" action="https://formspree.io/f/xrbbzydy" method="POST">
                 <input type="text" name="name" placeholder="Your Name" required>
                 <input type="email" name="email" placeholder="Your Email" required>
         
@@ -166,47 +166,62 @@
     const handlePotluckFormSubmit = async (e) => {
         e.preventDefault();
 
+        const potluckForm = document.getElementById("potluck-form");
         const selectedFood = document.querySelector('input[name="food"]:checked');
         const name = document.querySelector('input[name="name"]').value;
         const email = document.querySelector('input[name="email"]').value;
+        const dietary = document.querySelector('textarea[name="dietary"]').value;
 
         if (!selectedFood) {
             alert("Please select a dish to bring.");
             return;
         }
 
-        const dish = selectedFood.nextElementSibling.textContent.trim();
+        const foodId = selectedFood.value;
 
         try {
-            // Send data to the backend for email notification
-            const response = await fetch("/.netlify/functions/sendEmail", {
+            // Send data to Formspree
+            const formspreeResponse = await fetch("https://formspree.io/f/xrbbzydy", {
                 method: "POST",
-                body: JSON.stringify({ name, email, dish }),
+                body: new FormData(potluckForm),
+            });
+
+            if (!formspreeResponse.ok) {
+                throw new Error("Failed to send data to Formspree.");
+            }
+
+            // Update Firebase
+            await fetch("/.netlify/functions/foodList", {
+                method: "POST",
+                body: JSON.stringify({ id: foodId }),
                 headers: { "Content-Type": "application/json" },
             });
 
-            if (response.ok) {
-                // Show thank-you popup
-                const thankYouPopup = document.getElementById("thank-you-popup");
-                thankYouPopup.classList.remove("hidden");
+            // Show thank-you popup
+            const thankYouPopup = document.getElementById("thank-you-popup");
+            thankYouPopup.classList.remove("hidden");
 
-                // Close the popup when the button is clicked
-                const closePopupButton = document.getElementById("close-popup");
-                closePopupButton.addEventListener("click", () => {
-                    thankYouPopup.classList.add("hidden");
-                });
+            // Close popup event
+            const closePopupButton = document.getElementById("close-popup");
+            closePopupButton.addEventListener("click", () => {
+                thankYouPopup.classList.add("hidden");
+                potluckForm.reset(); // Clear the form
+            });
 
-                // Refresh the food list to reflect changes
-                fetchFoodItems();
-            } else {
-                alert("An error occurred while sending the email. Please try again.");
-            }
+            // Refresh food list
+            fetchFoodItems();
         } catch (error) {
-            console.error("Error submitting form:", error);
+            console.error("Error:", error);
             alert("An error occurred. Please try again.");
         }
     };
 
+    // Attach event listener to the form
+    const potluckForm = document.getElementById("potluck-form");
+    potluckForm.addEventListener("submit", handlePotluckFormSubmit);
+
+    // Fetch food items on page load
+    document.addEventListener("DOMContentLoaded", fetchFoodItems);
     // Function to initialize the image slider
     const initializeSlider = () => {
         const slides = document.querySelector('.slides');

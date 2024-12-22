@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Baby in Bloom - Crystal's Baby Shower</title>
  <link rel="stylesheet" href="static/styles.css">
- <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
  
 </head>
 <body>
@@ -16,6 +15,7 @@
         <a href="#announcements">Announcements</a>
         <a href="#gallery">Gallery</a>  
     </nav>
+
     <div class="container">
         <header>
             <img class="invite-header" src="static\babyshowerinvite.png" alt="Invitation to Baby Shower for Crystal & Andy Solis.">
@@ -25,7 +25,7 @@
             <h2>About the Event</h2>
             <p>Crystal and Andy Solis are thrilled to be expecting there first child—a baby girl named Basil! Let’s come together to shower them with love, joy, and support as she embarks on this beautiful journey into motherhood. We hope you’ll join us for a magical garden-themed dance party filled with good music, fun vibes, and plenty of memories.</p>
 
-                <p>What to Wear: Embrace the garden theme! Think floral, colorful, and elegant—dress as if you’re strolling through a beautiful garden and ready to dance the night away.</p>
+                <p>What to Wear: There is no specific dress code, but there will be music and dancing, so bring your dancing shoes!</p>
                 
                 <p>Potluck Contribution: If you’d like to bring a dish, dessert, or drinks, we’d greatly appreciate your help! Simply scroll down to the potluck sign-up section to let us know what you’d like to contribute.</p>
                 
@@ -36,7 +36,7 @@
                 
                 <p>If you’d like to bring a guest, please include their details in the RSVP notes section. One of Crystal’s sisters will reach out to confirm.</p>
                 <p>For any questions or concerns, feel free to contact Jana Martin at (678) 790-1076 or Kerry Kurihara at (678) 545-7501.</p>
-               <p>We can’t wait to celebrate with you and make this a memorable day for Crystal and baby Basil. Thank you for your love and support—we hope to see you there!</p>
+               <p>We can’t wait to celebrate with you and make this a memorable day for Crystal, Andy, and baby Basil. Thank you for your love and support—we hope to see you there!</p>
                <button class="registry-btn"><a href="https://www.target.com/gift-registry/gift-giver?registryId=4960ee50-5454-11ef-a3ff-2b9baf4cbf3f&type=BABY" target="_blank">Target Registry</a></button>
                <button class="registry-btn"><a href="https://www.amazon.com/baby-reg/crystal-solis-march-2025/3VX2QYY3VKTPL" target="_blank">Amazon Registry</a></button>
             <button><a href="https://www.google.com/maps/place/16026+Barnesville+St,+Zebulon,+GA+30295/@33.1019363,-84.3443507,16z/data=!3m1!4b1!4m6!3m5!1s0x88f4866e70133afd:0xef2415fc677eb5d7!8m2!3d33.1019363!4d-84.3417704!16s%2Fg%2F11tg372tz3?entry=ttu&g_ep=EgoyMDI0MTIxMS4wIKXMDSoASAFQAw%3D%3D" class="direction-button" target="_blank">Get Directions</a></button>
@@ -58,17 +58,21 @@
             </form>
         </div>
 
-        <div class="section" id="potlock">
+        <div class="section" id="potluck">
             <h2>Potluck Sign-Up</h2>
-            <form class="form" action="https://formspree.io/f/xrbbzydy" method="POST">
+            <form class="form" id="potluck-form">
                 <input type="text" name="name" placeholder="Your Name" required>
                 <input type="email" name="email" placeholder="Your Email" required>
-                <select name="dish">
-                    <option value="Appetizers">Appetizers</option>
-                    <option value="Main Dish">Main Dish</option>
-                    <option value="Desserts">Desserts</option>
-                    <option value="Drinks">Drinks</option>
-                </select>
+        
+                <h3>Choose a Dish to Bring:</h3>
+                <div id="food-list">
+                    <!-- Food items will be dynamically populated here -->
+                </div>
+                <div id="thank-you-popup" class="popup hidden">
+                    <p>Thank you for signing up! Your contribution is greatly appreciated. 😊</p>
+                    <button id="close-popup">Close</button>
+                </div>
+
                 <textarea name="dietary" placeholder="Any dietary restrictions or notes?"></textarea>
                 <button type="submit">Sign Up</button>
             </form>
@@ -79,13 +83,13 @@
             <div id="announcement-list">
                 <!-- Announcements will be dynamically loaded here -->
                  <p>The baby shower will be held in The Upper Room, located in Zebulon, GA. The bulding is located on the corner of Griffin St and Barnsville St in downtown Zebulon. 
-                    We recommend using the Barnsville st address below for your GPS.</p>
+                    We recommend using the Barnesville st address below for your GPS.</p>
                 <p>Please note that parking is across from the building, and the entrance can be tricky to find. Follow these steps to make your arrival smoother:</p>
                  <ul>
                      <li>Parking: Park in the designated lot across the street from The Upper Room.</li>
                      <li>Finding the Entrance:
                         After parking, walk to the building and locate the entrance at the side alleyway (or specific landmark, if known).</li>
-                     <li>GPS: 16026 Barnseville St. Zebulon, GA 30295 </li>
+                     <li>GPS: 16026 Barnesville St. Zebulon, GA 30295 </li>
                      <!-- Additional announcements will be dynamically added here -->
                  </ul>
             </div>
@@ -112,35 +116,127 @@
         </footer>
     </div>
     <script>
-       document.addEventListener('DOMContentLoaded', () => {
-    const slides = document.querySelector('.slides');
-    const images = document.querySelectorAll('.slides img');
-    const prevButton = document.getElementById('prev');
-    const nextButton = document.getElementById('next');
-    let index = 0;
-    const totalImages = images.length;
+        // Function to fetch and display food items
+        const fetchFoodItems = async () => {
+            const foodList = document.getElementById("food-list");
+            try {
+                const response = await fetch("/.netlify/functions/foodList");
+                const foodItems = await response.json();
+    
+                // Clear the current list
+                foodList.innerHTML = "";
+    
+                // Populate the list
+                Object.keys(foodItems).forEach((key) => {
+                    const item = foodItems[key];
+                    const foodOption = document.createElement("div");
+                    foodOption.className = "food-option";
+    
+                    // Add a strikethrough if the item is unavailable
+                    foodOption.innerHTML = `
+                        <label style="${item.available ? "" : "text-decoration: line-through;"}">
+                            <input type="radio" name="food" value="${key}" ${!item.available ? "disabled" : ""}>
+                            ${item.name} ${!item.available ? "(Already Taken)" : ""}
+                        </label>
+                    `;
+                    foodList.appendChild(foodOption);
+                });
+                 // Add event listener to highlight selected option
+        const radioButtons = document.querySelectorAll('input[name="food"]');
+        radioButtons.forEach((radio) => {
+            radio.addEventListener("change", (event) => {
+                // Remove highlight from all options
+                radioButtons.forEach((btn) => btn.closest("label").classList.remove("selected"));
+                // Highlight the selected option
+                event.target.closest("label").classList.add("selected");
+            });
+        });
+            } catch (error) {
+                console.error("Error fetching food items:", error);
+                foodList.innerHTML = "<p>Error loading food items. Please try again later.</p>";
+            }
+        };
+    
+       // Function to handle form submission
+const handlePotluckFormSubmit = async (e) => {
+    e.preventDefault();
 
-    // Function to update the slide position
-    function showSlide() {
-        slides.style.transform = `translateX(${-index * 100}%)`;
+    const selectedFood = document.querySelector('input[name="food"]:checked');
+    if (!selectedFood) {
+        alert("Please select a dish to bring.");
+        return;
     }
 
-    // Event listeners for navigation buttons
-    nextButton.addEventListener('click', () => {
-        index = (index + 1) % totalImages;
-        showSlide();
-    });
+    try {
+        await fetch("/.netlify/functions/foodList", {
+            method: "POST",
+            body: JSON.stringify({ id: selectedFood.value }),
+            headers: { "Content-Type": "application/json" },
+        });
 
-    prevButton.addEventListener('click', () => {
-        index = (index - 1 + totalImages) % totalImages;
-        showSlide();
-    });
+        // Show thank-you popup
+        const thankYouPopup = document.getElementById("thank-you-popup");
+        thankYouPopup.classList.remove("hidden");
 
-    // Initialize the slider
-    showSlide();
-});
+        // Close the popup when the button is clicked
+        const closePopupButton = document.getElementById("close-popup");
+        closePopupButton.addEventListener("click", () => {
+            thankYouPopup.classList.add("hidden");
+        });
 
+        // Refresh the food list to reflect changes
+        fetchFoodItems();
+    } catch (error) {
+        console.error("Error submitting form:", error);
+        alert("An error occurred. Please try again.");
+    }
+};
 
+    
+        // Function to initialize the image slider
+        const initializeSlider = () => {
+            const slides = document.querySelector('.slides');
+            const images = document.querySelectorAll('.slides img');
+            const prevButton = document.getElementById('prev');
+            const nextButton = document.getElementById('next');
+            let index = 0;
+            const totalImages = images.length;
+    
+            // Function to update the slide position
+            const showSlide = () => {
+                slides.style.transform = `translateX(${-index * 100}%)`;
+            };
+    
+            // Event listeners for navigation buttons
+            nextButton.addEventListener('click', () => {
+                index = (index + 1) % totalImages;
+                showSlide();
+            });
+    
+            prevButton.addEventListener('click', () => {
+                index = (index - 1 + totalImages) % totalImages;
+                showSlide();
+            });
+    
+            // Initialize the slider
+            showSlide();
+        };
+    
+        // Initialize all scripts on DOMContentLoaded
+        document.addEventListener("DOMContentLoaded", () => {
+            // Fetch and display food items
+            fetchFoodItems();
+    
+            // Set up form submission handler
+            const potluckForm = document.getElementById("potluck-form");
+            if (potluckForm) {
+                potluckForm.addEventListener("submit", handlePotluckFormSubmit);
+            }
+    
+            // Initialize the image slider
+            initializeSlider();
+        });
     </script>
+    
 </body>
 </html>

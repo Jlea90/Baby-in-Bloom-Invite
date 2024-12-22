@@ -23,7 +23,7 @@
 
         <div class="section" id="about">
             <h2>About the Event</h2>
-            <p>Crystal and Andy Solis are thrilled to be expecting there first child—a baby girl named Basil! Let’s come together to shower them with love, joy, and support as she embarks on this beautiful journey into motherhood. We hope you’ll join us for a magical garden-themed dance party filled with good music, fun vibes, and plenty of memories.</p>
+            <p>Crystal and Andy Solis are thrilled to be expecting there first child—a baby girl named Basil! Let’s come together to shower them with love, joy, and support as she embarks on this beautiful journey into motherhood. We hope you’ll join us for a garden-themed dance party filled with good music, fun vibes, and plenty of memories.</p>
 
                 <p>What to Wear: There is no specific dress code, but there will be music and dancing, so bring your dancing shoes!</p>
                 
@@ -58,7 +58,7 @@
             </form>
         </div>
 
-        <div class="section" id="potluck">
+        <div class="section" id="potluck" action="https://formspree.io/f/xrbbzydy" method="POST">
             <h2>Potluck Sign-Up</h2>
             <form class="form" id="potluck-form">
                 <input type="text" name="name" placeholder="Your Name" required>
@@ -116,126 +116,139 @@
         </footer>
     </div>
     <script>
-        // Function to fetch and display food items
-        const fetchFoodItems = async () => {
-            const foodList = document.getElementById("food-list");
-            try {
-                const response = await fetch("/.netlify/functions/foodList");
-                const foodItems = await response.json();
-    
-                // Clear the current list
-                foodList.innerHTML = "";
-    
-                // Populate the list
-                Object.keys(foodItems).forEach((key) => {
-                    const item = foodItems[key];
-                    const foodOption = document.createElement("div");
-                    foodOption.className = "food-option";
-    
-                    // Add a strikethrough if the item is unavailable
-                    foodOption.innerHTML = `
-                        <label style="${item.available ? "" : "text-decoration: line-through;"}">
-                            <input type="radio" name="food" value="${key}" ${!item.available ? "disabled" : ""}>
-                            ${item.name} ${!item.available ? "(Already Taken)" : ""}
-                        </label>
-                    `;
-                    foodList.appendChild(foodOption);
+        
+    // Function to fetch and display food items
+    const fetchFoodItems = async () => {
+        const foodList = document.getElementById("food-list");
+        try {
+            const response = await fetch("/.netlify/functions/foodList");
+            const foodItems = await response.json();
+
+            // Clear the current list
+            foodList.innerHTML = "";
+
+            // Populate the list
+            Object.keys(foodItems).forEach((key) => {
+                const item = foodItems[key];
+                const foodOption = document.createElement("div");
+                foodOption.className = "food-option";
+
+                // Add a strikethrough if the item is unavailable
+                foodOption.innerHTML = `
+                    <label style="${item.available ? "" : "text-decoration: line-through;"}">
+                        <input type="radio" name="food" value="${key}" ${!item.available ? "disabled" : ""}>
+                        ${item.name} ${!item.available ? "(Already Taken)" : ""}
+                    </label>
+                `;
+                foodList.appendChild(foodOption);
+            });
+
+            // Add event listener to highlight selected option
+            const radioButtons = document.querySelectorAll('input[name="food"]');
+            radioButtons.forEach((radio) => {
+                radio.addEventListener("change", (event) => {
+                    // Remove highlight from all options
+                    radioButtons.forEach((btn) => btn.closest("label").classList.remove("selected"));
+                    // Highlight the selected option
+                    event.target.closest("label").classList.add("selected");
                 });
-                 // Add event listener to highlight selected option
-        const radioButtons = document.querySelectorAll('input[name="food"]');
-        radioButtons.forEach((radio) => {
-            radio.addEventListener("change", (event) => {
-                // Remove highlight from all options
-                radioButtons.forEach((btn) => btn.closest("label").classList.remove("selected"));
-                // Highlight the selected option
-                event.target.closest("label").classList.add("selected");
             });
-        });
-            } catch (error) {
-                console.error("Error fetching food items:", error);
-                foodList.innerHTML = "<p>Error loading food items. Please try again later.</p>";
+        } catch (error) {
+            console.error("Error fetching food items:", error);
+            foodList.innerHTML = "<p>Error loading food items. Please try again later.</p>";
+        }
+    };
+
+    // Function to handle form submission
+    const handlePotluckFormSubmit = async (e) => {
+        e.preventDefault();
+
+        const selectedFood = document.querySelector('input[name="food"]:checked');
+        const name = document.querySelector('input[name="name"]').value;
+        const email = document.querySelector('input[name="email"]').value;
+
+        if (!selectedFood) {
+            alert("Please select a dish to bring.");
+            return;
+        }
+
+        const dish = selectedFood.nextElementSibling.textContent.trim();
+
+        try {
+            // Send data to the backend for email notification
+            const response = await fetch("/.netlify/functions/sendEmail", {
+                method: "POST",
+                body: JSON.stringify({ name, email, dish }),
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (response.ok) {
+                // Show thank-you popup
+                const thankYouPopup = document.getElementById("thank-you-popup");
+                thankYouPopup.classList.remove("hidden");
+
+                // Close the popup when the button is clicked
+                const closePopupButton = document.getElementById("close-popup");
+                closePopupButton.addEventListener("click", () => {
+                    thankYouPopup.classList.add("hidden");
+                });
+
+                // Refresh the food list to reflect changes
+                fetchFoodItems();
+            } else {
+                alert("An error occurred while sending the email. Please try again.");
             }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            alert("An error occurred. Please try again.");
+        }
+    };
+
+    // Function to initialize the image slider
+    const initializeSlider = () => {
+        const slides = document.querySelector('.slides');
+        const images = document.querySelectorAll('.slides img');
+        const prevButton = document.getElementById('prev');
+        const nextButton = document.getElementById('next');
+        let index = 0;
+        const totalImages = images.length;
+
+        // Function to update the slide position
+        const showSlide = () => {
+            slides.style.transform = `translateX(${-index * 100}%)`;
         };
-    
-       // Function to handle form submission
-const handlePotluckFormSubmit = async (e) => {
-    e.preventDefault();
 
-    const selectedFood = document.querySelector('input[name="food"]:checked');
-    if (!selectedFood) {
-        alert("Please select a dish to bring.");
-        return;
-    }
-
-    try {
-        await fetch("/.netlify/functions/foodList", {
-            method: "POST",
-            body: JSON.stringify({ id: selectedFood.value }),
-            headers: { "Content-Type": "application/json" },
-        });
-
-        // Show thank-you popup
-        const thankYouPopup = document.getElementById("thank-you-popup");
-        thankYouPopup.classList.remove("hidden");
-
-        // Close the popup when the button is clicked
-        const closePopupButton = document.getElementById("close-popup");
-        closePopupButton.addEventListener("click", () => {
-            thankYouPopup.classList.add("hidden");
-        });
-
-        // Refresh the food list to reflect changes
-        fetchFoodItems();
-    } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("An error occurred. Please try again.");
-    }
-};
-
-    
-        // Function to initialize the image slider
-        const initializeSlider = () => {
-            const slides = document.querySelector('.slides');
-            const images = document.querySelectorAll('.slides img');
-            const prevButton = document.getElementById('prev');
-            const nextButton = document.getElementById('next');
-            let index = 0;
-            const totalImages = images.length;
-    
-            // Function to update the slide position
-            const showSlide = () => {
-                slides.style.transform = `translateX(${-index * 100}%)`;
-            };
-    
-            // Event listeners for navigation buttons
-            nextButton.addEventListener('click', () => {
-                index = (index + 1) % totalImages;
-                showSlide();
-            });
-    
-            prevButton.addEventListener('click', () => {
-                index = (index - 1 + totalImages) % totalImages;
-                showSlide();
-            });
-    
-            // Initialize the slider
+        // Event listeners for navigation buttons
+        nextButton.addEventListener('click', () => {
+            index = (index + 1) % totalImages;
             showSlide();
-        };
-    
-        // Initialize all scripts on DOMContentLoaded
-        document.addEventListener("DOMContentLoaded", () => {
-            // Fetch and display food items
-            fetchFoodItems();
-    
-            // Set up form submission handler
-            const potluckForm = document.getElementById("potluck-form");
-            if (potluckForm) {
-                potluckForm.addEventListener("submit", handlePotluckFormSubmit);
-            }
-    
-            // Initialize the image slider
-            initializeSlider();
         });
+
+        prevButton.addEventListener('click', () => {
+            index = (index - 1 + totalImages) % totalImages;
+            showSlide();
+        });
+
+        // Initialize the slider
+        showSlide();
+    };
+
+    // Initialize all scripts on DOMContentLoaded
+    document.addEventListener("DOMContentLoaded", () => {
+        // Fetch and display food items
+        fetchFoodItems();
+
+        // Set up form submission handler
+        const potluckForm = document.getElementById("potluck-form");
+        if (potluckForm) {
+            potluckForm.addEventListener("submit", handlePotluckFormSubmit);
+        }
+
+        // Initialize the image slider
+        initializeSlider();
+    });
+
+
     </script>
     
 </body>

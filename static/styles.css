@@ -205,6 +205,7 @@ form select option {
 ul li {
     text-align: left;
 }
+
 .food-option label {
     cursor: pointer;
     padding: 5px;
@@ -212,41 +213,13 @@ ul li {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.food-option label:hover {
-    background-color: #f0f0f0; /* Light gray */
-    color: #333; /* Darker text */
-    border-radius: 5px;
-}
-.food-option input[type="radio"]:checked + label {
-    background-color: #d4edda; /* Light green for selection */
+input[type="radio"]:checked + label {
+    background-color: #d4edda; /* Light green */
     color: #155724; /* Dark green text */
     border: 2px solid #155724;
     border-radius: 5px;
 }
 
-/* Slider Container */
-.slider {
-    position: relative;
-    width: 80%; /* Adjust width as needed */
-    max-width: 800px; /* Max width for the slider */
-    margin: 0 auto;
-    overflow: hidden; /* Hide overflow for smooth scrolling effect */
-    border: 2px solid #ab6940;
-    border-radius: 8px;
-}
-.food-option {
-    margin-bottom: 10px;
-}
-
-.food-option label {
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-input[type="radio"]:disabled + label {
-    color: gray;
-    cursor: not-allowed;
-}
 .food-option label.selected {
     background-color: #d4edda; /* Light green for selection */
     color: #155724; /* Dark green text */
@@ -254,6 +227,40 @@ input[type="radio"]:disabled + label {
     border-radius: 5px;
     font-weight: bold;
 }
+
+input[type="radio"]:disabled + label {
+    color: gray;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+/* Hover effect for labels */
+.food-option label:hover {
+    background-color: #f0f0f0; /* Light gray */
+    color: #333; /* Darker text */
+    border-radius: 5px;
+}
+/* Disabled items */
+input[type="radio"]:disabled + label {
+    color: gray;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    background-color: #f8f9fa; /* Light gray background */
+    border: none;
+    opacity: 0.6;
+}
+
+/* Hover effect for disabled items (optional, can remove if not needed) */
+input[type="radio"]:disabled + label:hover {
+    background-color: #f8f9fa; /* Maintain same background on hover */
+    color: gray;
+    cursor: not-allowed;
+}
+/* Hover style for selected radio button */
+input[type="radio"]:checked + label:hover {
+    background-color: #c3e6cb; /* Slightly darker green for hover */
+    color: #0b2e13; /* Slightly darker green text */
+}
+
 .popup {
     position: fixed;
     top: 50%;
@@ -291,7 +298,16 @@ input[type="radio"]:disabled + label {
 .popup button:hover {
     background-color: #117a34;
 }
-
+/* Slider Container */
+.slider {
+    position: relative;
+    width: 80%; /* Adjust width as needed */
+    max-width: 800px; /* Max width for the slider */
+    margin: 0 auto;
+    overflow: hidden; /* Hide overflow for smooth scrolling effect */
+    border: 2px solid #ab6940;
+    border-radius: 8px;
+}
 /* Slides */
 .slides {
     display: flex;

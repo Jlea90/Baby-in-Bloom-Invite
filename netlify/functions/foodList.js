@@ -1,11 +1,8 @@
-
 const admin = require("firebase-admin");
 
-// Correct path to serviceAccountKey.json
-const serviceAccount = require("./serviceAccountKey.json");
-
-// Initialize Firebase Admin SDK
+// Initialize Firebase Admin SDK if not already initialized
 if (!admin.apps.length) {
+    const serviceAccount = require("./serviceAccountKey.json");
     admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         databaseURL: "https://potluck-app-336bd-default-rtdb.firebaseio.com/",
@@ -17,7 +14,7 @@ const db = admin.database();
 exports.handler = async (event) => {
     if (event.httpMethod === "GET") {
         try {
-            // Fetch food items from Firebase Realtime Database
+            // Fetch all food items
             const snapshot = await db.ref("foodItems").once("value");
             const foodItems = snapshot.val();
 
@@ -44,12 +41,31 @@ exports.handler = async (event) => {
                 };
             }
 
-            // Update item availability in Firebase
-            await db.ref(`foodItems/${id}`).update({ available: false });
+            // Get the current food item
+            const itemRef = db.ref(`foodItems/${id}`);
+            const itemSnapshot = await itemRef.once("value");
+            const itemData = itemSnapshot.val();
+
+            if (!itemData) {
+                return {
+                    statusCode: 404,
+                    body: JSON.stringify({ message: "Item not found" }),
+                };
+            }
+
+            if (itemData.signedUp >= itemData.needed) {
+                return {
+                    statusCode: 400,
+                    body: JSON.stringify({ message: "All slots for this item are filled" }),
+                };
+            }
+
+            // Increment the signedUp count
+            await itemRef.update({ signedUp: itemData.signedUp + 1 });
 
             return {
                 statusCode: 200,
-                body: JSON.stringify({ message: "Item updated successfully" }),
+                body: JSON.stringify({ message: "Signed up successfully" }),
             };
         } catch (error) {
             return {

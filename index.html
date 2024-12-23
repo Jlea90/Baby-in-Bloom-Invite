@@ -123,46 +123,63 @@
 
 <script>
    
-        // Function to fetch and display food items
-        const fetchFoodItems = async () => {
-            const foodList = document.getElementById("food-list");
-            try {
-                const response = await fetch("/.netlify/functions/foodList");
-                const foodItems = await response.json();
-    
-                // Clear the current list
-                foodList.innerHTML = "";
-    
-                // Populate the list
-                Object.keys(foodItems).forEach((key) => {
-                    const item = foodItems[key];
-                    const foodOption = document.createElement("div");
-                    foodOption.className = "food-option";
-    
-                    // Add a strikethrough if the item is unavailable
-                    foodOption.innerHTML = `
-                        <label style="${item.available ? "" : "text-decoration: line-through;"}">
-                            <input type="radio" name="food" value="${key}" ${!item.available ? "disabled" : ""}>
-                            ${item.name} ${!item.available ? "(Already Taken)" : ""}
-                        </label>
-                    `;
-                    foodList.appendChild(foodOption);
-                });
-                 // Add event listener to highlight selected option
+   const fetchFoodItems = async () => {
+    const foodList = document.getElementById("food-list");
+
+    try {
+        const response = await fetch("/.netlify/functions/foodList");
+        const foodItems = await response.json();
+
+        // Clear the current list
+        foodList.innerHTML = "";
+
+        // Populate the list with radio buttons and labels
+        Object.keys(foodItems).forEach((key) => {
+            const item = foodItems[key];
+            const isFull = item.signedUp >= item.needed;
+
+            // Create a food option div
+            const foodOption = document.createElement("div");
+            foodOption.className = "food-option";
+
+            // Set up input and label
+            foodOption.innerHTML = `
+                <input 
+                    type="radio" 
+                    name="food" 
+                    id="${key}" 
+                    value="${key}" 
+                    ${isFull ? "disabled" : ""}
+                >
+                <label for="${key}" class="${isFull ? "disabled" : ""}">
+                    ${item.name} (${item.signedUp}/${item.needed} slots filled)
+                </label>
+            `;
+            foodList.appendChild(foodOption);
+        });
+
+        // Add event listener to highlight the selected option
         const radioButtons = document.querySelectorAll('input[name="food"]');
         radioButtons.forEach((radio) => {
             radio.addEventListener("change", (event) => {
                 // Remove highlight from all options
-                radioButtons.forEach((btn) => btn.closest("label").classList.remove("selected"));
+                document.querySelectorAll(".food-option label").forEach((label) =>
+                    label.classList.remove("selected")
+                );
                 // Highlight the selected option
-                event.target.closest("label").classList.add("selected");
+                const selectedLabel = event.target.nextElementSibling;
+                selectedLabel.classList.add("selected");
             });
         });
-            } catch (error) {
-                console.error("Error fetching food items:", error);
-                foodList.innerHTML = "<p>Error loading food items. Please try again later.</p>";
-            }
-        };
+    } catch (error) {
+        console.error("Error fetching food items:", error);
+        foodList.innerHTML = "<p>Error loading food items. Please try again later.</p>";
+    }
+};
+
+// Fetch food items when the page loads
+fetchFoodItems();
+
     
        // Function to handle form submission
 const handlePotluckFormSubmit = async (e) => {
